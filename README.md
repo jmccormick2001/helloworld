@@ -11,7 +11,7 @@ Getting started:
 1) make swagger-serve -> serve swagger spec locally
 
 
-Creating your first kubernetes cluster:
+test your first kubernetes cluster:
 1) ./bin/aeroctl create cluster my-cluster
 at this point the cluster should be created and the operator installed. This can take 10 to 20 minutes depending.
 
