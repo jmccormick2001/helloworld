@@ -85,6 +85,7 @@ func InitFlags(fs *pflag.FlagSet) {
 }
 
 func main() {
+ 
 	var metricsAddr string
 	var enableLeaderElection bool
 	var probeAddr string
@@ -179,4 +180,12 @@ func setupReconcilers(ctx context.Context, mgr ctrl.Manager) {
 		os.Exit(1)
 	}
 
+ 
+}
+import {
+	
+	"context"
+	"flag"
+	"os"
+	"time"
 }
