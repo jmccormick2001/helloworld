@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/aerospike/aerostation/api-server/pkg/responses"
@@ -37,11 +38,14 @@ func GetCloudRouter() *CloudsRouter {
 func (c *CloudsRouter) GetSupportedClouds(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	json.NewEncoder(w).Encode(
+	err := json.NewEncoder(w).Encode(
 		[]responses.Cloud{
 			{
 				Name:  "AWS",
 				Image: "https://some-s3-bucket",
 			},
 		})
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }

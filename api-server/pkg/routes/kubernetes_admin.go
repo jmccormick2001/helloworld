@@ -54,11 +54,17 @@ func (k *KubernetesRouter) GetAllKubernetesClusters(w http.ResponseWriter, r *ht
 	}) //.List(context.Background(), clusters)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("unable to get all kubernetes clusters " + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("unable to get all kubernetes clusters " + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode(json.RawMessage(res.Clusters))
+	err = json.NewEncoder(w).Encode(json.RawMessage(res.Clusters))
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 // GetKubernetesCluster - Get cluster spec by name
@@ -103,7 +109,10 @@ func (k *KubernetesRouter) GetKubernetesCluster(w http.ResponseWriter, r *http.R
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("unable to get cluster " + clusterName + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("unable to get cluster " + clusterName + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -111,7 +120,10 @@ func (k *KubernetesRouter) GetKubernetesCluster(w http.ResponseWriter, r *http.R
 	var cluster v1.AeroClusterManagerSpec
 	if err := json.NewDecoder(clusterReader).Decode(&cluster); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Internal Server Error")
+		err := json.NewEncoder(w).Encode("Internal Server Error")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -119,11 +131,17 @@ func (k *KubernetesRouter) GetKubernetesCluster(w http.ResponseWriter, r *http.R
 	var status v1.AeroClusterManagerStatus
 	if err := json.NewDecoder(statusReader).Decode(&status); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Internal Server Error")
+		err := json.NewEncoder(w).Encode("Internal Server Error")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode(responses.KubernetesClusterResponse{Cluster: cluster, Status: status})
+	err = json.NewEncoder(w).Encode(responses.KubernetesClusterResponse{Cluster: cluster, Status: status})
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 // CreateKubernetesCluster - Create cluster
@@ -157,7 +175,10 @@ func (k *KubernetesRouter) CreateKubernetesCluster(w http.ResponseWriter, r *htt
 	var input v1.ClusterOptions
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Bad request" + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Bad request" + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 	fmt.Printf("ClusterOptions are %v\n", input)
@@ -197,11 +218,17 @@ func (k *KubernetesRouter) CreateKubernetesCluster(w http.ResponseWriter, r *htt
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(fmt.Sprintf("Unable to create cluster: %s", err.Error()))
+		err := json.NewEncoder(w).Encode(fmt.Sprintf("Unable to create cluster: %s", err.Error()))
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Cluster created successfully")
+	err = json.NewEncoder(w).Encode("Cluster created successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 // Delete - delete cluster
@@ -240,7 +267,10 @@ func (k *KubernetesRouter) DeleteKubernetesCluster(w http.ResponseWriter, r *htt
 
 	if clusterName == "" || namespace == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Invalid input, either namespace or cluster name is not provided")
+		err := json.NewEncoder(w).Encode("Invalid input, either namespace or cluster name is not provided")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -248,11 +278,17 @@ func (k *KubernetesRouter) DeleteKubernetesCluster(w http.ResponseWriter, r *htt
 	ctx := context.Background()
 	if _, err := k.Client.DeleteCluster(ctx, &pb.DeleteKubernetesClusterRequest{Name: clusterName, Namespace: namespace}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Unable to delete cluster " + clusterName + " | Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Unable to delete cluster " + clusterName + " | Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Cluster deleted successfully")
+	err := json.NewEncoder(w).Encode("Cluster deleted successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 // UpdateKubernetesCluster - update cluster
@@ -287,7 +323,10 @@ func (k *KubernetesRouter) UpdateKubernetesCluster(w http.ResponseWriter, r *htt
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		log.Println("[ERROR] :  ", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Unable to update cluster " + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Unable to update cluster " + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 	// TODO: get user namespace
@@ -307,9 +346,15 @@ func (k *KubernetesRouter) UpdateKubernetesCluster(w http.ResponseWriter, r *htt
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Unable to update cluster " + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Unable to update cluster " + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Cluster updated successfully")
+	err = json.NewEncoder(w).Encode("Cluster updated successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }

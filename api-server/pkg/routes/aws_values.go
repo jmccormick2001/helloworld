@@ -54,7 +54,10 @@ func (k *AwsValues) GetAWSRegions(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	json.NewEncoder(w).Encode(regions)
+	err := json.NewEncoder(w).Encode(regions)
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 // GetRegionInstanceTypes - get list of all the instances for a region in AWS
@@ -94,7 +97,10 @@ func (k *AwsValues) GetRegionInstanceTypes(w http.ResponseWriter, r *http.Reques
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Invalid Region")
+		err := json.NewEncoder(w).Encode("Invalid Region")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -111,7 +117,10 @@ func (k *AwsValues) GetRegionInstanceTypes(w http.ResponseWriter, r *http.Reques
 		},
 	}
 
-	json.NewEncoder(w).Encode(instances)
+	err = json.NewEncoder(w).Encode(instances)
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 func (k *AwsValues) validateAWSRegion(region string) error {

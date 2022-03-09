@@ -220,11 +220,17 @@ func (a *AerospikeRouter) DeleteAerospikeCluster(w http.ResponseWriter, r *http.
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Internal Server Error | Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Internal Server Error | Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Aerospike cluster deleted successfully")
+	err = json.NewEncoder(w).Encode("Aerospike cluster deleted successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 //UpdateAerospikeCluster - update aerospike cluster
@@ -269,7 +275,10 @@ func (a *AerospikeRouter) UpdateAerospikeCluster(w http.ResponseWriter, r *http.
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		log.Println("[ERROR] : ", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Unable to update aerospike cluster")
+		err := json.NewEncoder(w).Encode("Unable to update aerospike cluster")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -281,9 +290,15 @@ func (a *AerospikeRouter) UpdateAerospikeCluster(w http.ResponseWriter, r *http.
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Internal Server Error | Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Internal Server Error | Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Cluster updated successfully")
+	err = json.NewEncoder(w).Encode("Cluster updated successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }

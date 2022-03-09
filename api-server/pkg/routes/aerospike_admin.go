@@ -69,7 +69,10 @@ func (a *AerospikeAdminRouter) GetAerospikeCluster(w http.ResponseWriter, r *htt
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("unable to get cluster " + clusterName + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("unable to get cluster " + clusterName + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -77,7 +80,10 @@ func (a *AerospikeAdminRouter) GetAerospikeCluster(w http.ResponseWriter, r *htt
 	var cluster v1.AeroDatabaseSpec
 	if err := json.NewDecoder(clusterReader).Decode(&cluster); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Internal Server Error")
+		err := json.NewEncoder(w).Encode("Internal Server Error")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -85,17 +91,26 @@ func (a *AerospikeAdminRouter) GetAerospikeCluster(w http.ResponseWriter, r *htt
 	var status v1.AeroDatabaseStatus
 	if err := json.NewDecoder(statusReader).Decode(&status); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Internal Server Error")
+		err := json.NewEncoder(w).Encode("Internal Server Error")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("unable to get cluster " + clusterName + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("unable to get cluster " + clusterName + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode(responses.AerospikeClusterResponse{Cluster: cluster, Status: status})
+	err = json.NewEncoder(w).Encode(responses.AerospikeClusterResponse{Cluster: cluster, Status: status})
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 //GetAllAerospikeClusters - get list of all the database clusters
@@ -128,10 +143,16 @@ func (a *AerospikeAdminRouter) GetAllAerospikeClusters(w http.ResponseWriter, r 
 	res, err := a.Client.GetAllClusters(context.Background(), &pb.GetAllAerospikeClustersRequest{})
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode("Internal server error " + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Internal server error " + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 	}
 
-	json.NewEncoder(w).Encode(json.RawMessage(res.Clusters))
+	err = json.NewEncoder(w).Encode(json.RawMessage(res.Clusters))
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 //AdminCreateAerospikeCluster - Create Aerospike Database Cluster
@@ -167,7 +188,10 @@ func (c *AerospikeAdminRouter) AdminCreateAerospikeCluster(w http.ResponseWriter
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		log.Println("[ERROR] : ", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Unable to create database" + " | Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Unable to create database" + " | Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -187,11 +211,17 @@ func (c *AerospikeAdminRouter) AdminCreateAerospikeCluster(w http.ResponseWriter
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
-		json.NewEncoder(w).Encode("Unable to create cluster")
+		err := json.NewEncoder(w).Encode("Unable to create cluster")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Cluster created successfully")
+	err = json.NewEncoder(w).Encode("Cluster created successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 //AdminDeleteAerospikeCluster - delete aerospike database
@@ -231,7 +261,10 @@ func (c *AerospikeAdminRouter) AdminDeleteAerospikeCluster(w http.ResponseWriter
 
 	if clusterName == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Invalid input")
+		err := json.NewEncoder(w).Encode("Invalid input")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -246,11 +279,17 @@ func (c *AerospikeAdminRouter) AdminDeleteAerospikeCluster(w http.ResponseWriter
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		json.NewEncoder(w).Encode("unable to delete aerospike cluster bob" + clusterName + " | Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("unable to delete aerospike cluster bob" + clusterName + " | Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Cluster deleted successfully")
+	err = json.NewEncoder(w).Encode("Cluster deleted successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
 
 //AdminUpdateAerospikeCluster - update aerospike cluster
@@ -301,7 +340,10 @@ func (a *AerospikeAdminRouter) AdminUpdateAerospikeCluster(w http.ResponseWriter
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		log.Println("[ERROR] : ", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Bad request")
+		err := json.NewEncoder(w).Encode("Bad request")
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
@@ -313,9 +355,15 @@ func (a *AerospikeAdminRouter) AdminUpdateAerospikeCluster(w http.ResponseWriter
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		json.NewEncoder(w).Encode("Unable to update cluster " + "| Reason : " + err.Error())
+		err := json.NewEncoder(w).Encode("Unable to update cluster " + "| Reason : " + err.Error())
+		if err != nil {
+			fmt.Printf("error %s\n", err.Error())
+		}
 		return
 	}
 
-	json.NewEncoder(w).Encode("Cluster updated successfully")
+	err = json.NewEncoder(w).Encode("Cluster updated successfully")
+	if err != nil {
+		fmt.Printf("error %s\n", err.Error())
+	}
 }
