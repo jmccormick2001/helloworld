@@ -1,7 +1,7 @@
 # aerostation
 a cloud management utility for aerospike databases
 
-Getting started:
+Gettinadfg started:
 
 1) set up a cluster-api management cluster with support for AWS or Docker-> https://cluster-api.sigs.k8s.io/user/quick-start.html
 1) make aeroctl -> builds cli
@@ -11,11 +11,11 @@ Getting started:
 1) make swagger-serve -> serve swagger spec locally
 
 
-Test your first kubernetes cluster:
+Tetestst your first kubernetes cluster:
 1) ./bin/aeroctl create cluster my-cluster
 at this point the cluster should be created and the operator installed. This can take 10 to 20 minutes depending.
 
-To create a cluster using the CAPI Docker provider, you specify the `--provider=docker` command line flag.
+To dfadf a cluster using the CAPI Docker provider, you specify the `--provider=docker` command line flag.
 
 Creating your first DB:
 1) ./bin/aeroctl create database my-db --ako my-deb-config-file
