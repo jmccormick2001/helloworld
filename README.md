@@ -1,7 +1,7 @@
 # aerostation
 a cloud management utility for aerospike databases
 
-Getting started:
+Gettinadfg started:
 
 1) set up a cluster-api management cluster with support for AWS or Docker-> https://cluster-api.sigs.k8s.io/user/quick-start.html
 1) make aeroctl -> builds cli
